@@ -1,0 +1,16 @@
+-e .
+bumpversion
+wheel
+watchdog
+flake8
+tox
+coverage
+twine
+
+pytest
+pytest-cov
+pytest-runner
+codecov
+autoflake
+pylint
+jedi
