@@ -43,7 +43,10 @@ def make_html_images_inline(in_filepath, out_filepath):
         mimetype = guess_type(img_path)
         try:
             img.attrs['src'] = \
-                "data:%s;base64,%s" % (mimetype, file_to_base64(img_path))
+                "data:%s;base64,%s" % (mimetype, file_to_base64(img_path)
+        Except:
+            print('ignoring link external img')         
+        
 
     with open(out_filepath, 'w') as of:
         of.write(str(soup))
