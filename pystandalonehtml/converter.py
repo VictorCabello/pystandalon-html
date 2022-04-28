@@ -44,7 +44,7 @@ def make_html_images_inline(in_filepath, out_filepath):
         try:
             img.attrs['src'] = \
                 "data:%s;base64,%s" % (mimetype, file_to_base64(img_path)
-        Except:
+        except:
             print('ignoring link external img')         
         
 
