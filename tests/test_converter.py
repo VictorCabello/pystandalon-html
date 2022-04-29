@@ -31,19 +31,20 @@ def test_file_to_base64():
 
 def test_file_to_base64():
     # Prepare
+    current = os.getcwd()
     basedir = os.path.dirname(__file__)
     img = 'test.html'
     expected = 'expected_output.html'
-    myPath = os.path.join(basedir, img)
-    expectedPath = os.path.join(basedir, expected)
     output = tempfile.NamedTemporaryFile(delete=False)
+    os.chdir(basedir)
 
     # Execute
-    converter.make_html_images_inline(myPath, output.name)
+    converter.make_html_images_inline(img, output.name)
 
     # Verify
-    assert(filecmp.cmp(expectedPath, output.name))
+    assert(filecmp.cmp(expected, output.name))
 
     # clean
     output.close()
     os.unlink(output.name)
+    os.chdir(current)
