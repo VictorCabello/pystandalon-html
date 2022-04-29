@@ -1,4 +1,6 @@
 import os
+import urllib.request
+import base64
 import mimetypes
 from bs4 import BeautifulSoup
 
@@ -21,10 +23,28 @@ def file_to_base64(filepath):
     :return: The file content, Base64 encoded.
     :rtype: str
     """
-    import base64
     with open(filepath, 'rb') as f:
         encoded_str = base64.b64encode(f.read())
     return encoded_str.decode()
+
+def url_to_base64(url):
+    """
+    Returns the content of a file as a Base64 encoded string.
+    :param url: URL to the file.
+    :type url: str
+    :return: The file content, Base64 encoded.
+    :rtype: str
+    """
+    file = urllib.request.urlopen(url)
+    encoded_str = base64.b64encode(file.read())
+    return encoded_str.decode()
+
+
+def splitme(s):
+    if (s[0] == "\\"):
+        return s[1:]
+    else: 
+        return(s)
 
 
 def make_html_images_inline(in_filepath, out_filepath):
@@ -41,10 +61,12 @@ def make_html_images_inline(in_filepath, out_filepath):
     for img in soup.find_all('img'):
         img_path = os.path.join(basepath, img.attrs['src'])
         mimetype = guess_type(img_path)
-        try:
-            img.attrs['src'] = "data:%s;base64,%s" % (mimetype, file_to_base64(img_path))
-        except:
-            print('ignoring link external img')         
+        src = splitme(img.attrs['src'])
+        if src.startswith('http') or src.startswith('file:'):
+            img.attrs['src'] = "data:%s;base64,%s" % (mimetype, url_to_base64(src))
+        elif not src.startswith('data'):
+            print(src)
+            img.attrs['src'] = "data:%s;base64,%s" % (mimetype, file_to_base64(src))
         
 
     with open(out_filepath, 'w') as of:
